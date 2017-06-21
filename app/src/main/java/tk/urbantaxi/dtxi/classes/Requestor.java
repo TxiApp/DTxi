@@ -34,6 +34,8 @@ import static tk.urbantaxi.dtxi.Vehicles.SHARED_PREFERENCE;
 
 public class Requestor {
 
+    public final static String URL = "http://urbantaxi.tk/mbl/";
+
     public String url;
     public Boolean isRunning = false;
     public Map<String, Object> param;
@@ -41,7 +43,7 @@ public class Requestor {
     public Boolean asynchronus = false;
 
     public Requestor(String url, Map<String, Object> param, Context context){
-        this.url = url;
+        this.url = URL + url;
         this.param = param;
         this.context = context;
     }

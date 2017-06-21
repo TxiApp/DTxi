@@ -31,6 +31,7 @@ import java.net.URLEncoder;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import tk.urbantaxi.dtxi.services.LocationService;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class Login extends AppCompatActivity implements View.OnClickListener {
@@ -192,6 +193,10 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                     SharedPreferences.Editor editor = getSharedPreferences(SHARED_PREFERENCE, MODE_PRIVATE).edit();
                     editor.putString("userDetails", stringDetails);
                     editor.commit();
+
+                    Intent intentService = new Intent(getApplicationContext(), LocationService.class);
+                    startService(intentService);
+
                     Intent intent = new Intent(getApplicationContext(), Menuoptions.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);

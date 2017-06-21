@@ -32,7 +32,7 @@ import static tk.urbantaxi.dtxi.Vehicles.VEHICLE_URL;
 public class Startsession extends AppCompatActivity implements View.OnClickListener {
 
     public final static String SHARED_PREFERENCE = "TaxiAppSharedPreference";
-    public final static String URL = "http://urbantaxi.tk/mbl/startsession";
+    public final static String URL = "startsession";
 
     public TextView tvName;
     public ImageView ivTaxiImage;
