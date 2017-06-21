@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:id="@+id/lin_lay"
+    android:orientation="vertical"
+    android:weightSum="1"
+    android:background="@drawable/main_background">
+
+
+    <ImageView
+        android:id="@+id/splash"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:layout_marginBottom="25dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:baselineAlignBottom="true"
+        android:src="@drawable/app_icon" />
+
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="@dimen/xlarge"
+        android:textAlignment="center" />
+
+    <ImageView
+        android:id="@+id/ivTaxiImage"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:scaleType="fitXY"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/image_border"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textSize="@dimen/medium"
+        android:textColor="@color/white"
+        android:id="@+id/tvTaxiCode"/>
+    <Button
+        android:id="@+id/btnSubmit"
+        android:layout_width="269dp"
+        android:layout_height="wrap_content"
+        android:width="35dp"
+        android:layout_marginTop="25dp"
+        android:layout_gravity="center"
+        android:text="Start Session Now"
+        android:background="@drawable/button_color"
+        android:textColor="@color/orange"
+        android:textSize="@dimen/medium"
+        android:onClick="goToSession" />
+
+</LinearLayout>

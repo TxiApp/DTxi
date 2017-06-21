@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:id="@+id/lin_lay"
+    android:orientation="vertical"
+    android:weightSum="1"
+    android:background="@drawable/main_background">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/orange"
+        android:textSize="@dimen/xxlarge"
+        android:textAlignment="center"
+        android:layout_marginTop="120dp"
+        android:text="Joe Smith" />
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="240dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="@dimen/xxlarge"
+        android:textAlignment="center"
+        android:layout_gravity="center"
+        android:text="is requesting a taxi trip" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="240dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/orange"
+        android:textSize="@dimen/large"
+        android:layout_gravity="center"
+        android:textAlignment="center"
+        android:layout_marginTop="30dp"
+        android:text="1645 Sugar Hill Dr.. Houston, TX 77057" />
+
+    <Button
+        android:id="@+id/Start"
+        android:layout_width="269dp"
+        android:layout_height="wrap_content"
+        android:width="35dp"
+        android:layout_marginTop="70dp"
+        android:layout_gravity="center"
+        android:text="Start"
+        android:background="@drawable/button_color"
+        android:textColor="@color/orange"
+        android:textSize="@dimen/medium"
+        android:onClick="goToMap" />
+
+</LinearLayout>
