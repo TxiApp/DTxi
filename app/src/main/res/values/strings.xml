@@ -26,4 +26,6 @@
     <string name="home_text1">TXI</string>
     <string name="home_text2">BLK</string>
     <string name="home_text3">BY</string>
+    <string name="permission_text">This App needs to Access your Location.</string>
+    <string name="permission_text2">Tap to Grant Permission.</string>
 </resources>
