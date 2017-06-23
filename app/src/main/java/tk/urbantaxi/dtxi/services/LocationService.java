@@ -67,9 +67,9 @@ public class LocationService extends Service {
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
-            this.stopSelf();
+            return;
         }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5, listener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 15000, 5, listener);
 
     }
 

@@ -1,10 +1,14 @@
 package tk.urbantaxi.dtxi.classes;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Toast;
 
@@ -18,9 +22,12 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.NetworkInterface;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import tk.urbantaxi.dtxi.Vehicles;
@@ -34,13 +41,14 @@ import static tk.urbantaxi.dtxi.Vehicles.SHARED_PREFERENCE;
 
 public class Requestor {
 
-    public final static String URL = "http://urbantaxi.tk/mbl/";
+    private final static String URL = "http://urbantaxi.tk/mbl/";
 
-    public String url;
-    public Boolean isRunning = false;
-    public Map<String, Object> param;
-    public Context context;
-    public Boolean asynchronus = false;
+    private String url;
+    private Boolean isRunning = false;
+    private Map<String, Object> param;
+    private Context context;
+    private Boolean asynchronus = false;
+    private Integer PAGE = null;
 
     public Requestor(String url, Map<String, Object> param, Context context){
         this.url = URL + url;
@@ -49,6 +57,10 @@ public class Requestor {
     }
 
     public void execute(){
+        if(PAGE != null){
+            param.put("page", PAGE);
+        }
+
         SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCE, MODE_PRIVATE);
         String userDetails = prefs.getString("userDetails", null);
         if (userDetails != null) {
@@ -58,19 +70,28 @@ public class Requestor {
                 String password = userObject.getString("password");
                 param.put("username", username);
                 param.put("password", password);
-                Boolean network = isNetworkAvailable();
-                if (network == true) {
-                    if (isRunning == true && asynchronus == true) {
-                        new Ajaxer().execute();
-                    }else{
-                        new Ajaxer().execute();
-                    }
-                } else {
-                    onNetworkError();
-                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+
+        Boolean network = isNetworkAvailable();
+        if (network == true) {
+            WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+            WifiInfo wInfo = wifiManager.getConnectionInfo();
+            String macAddress = wInfo.getMacAddress();
+            if(macAddress.equals("02:00:00:00:00:00")){
+                macAddress = getWifiMacAddress();
+            }
+            param.put("macaddress", macAddress);
+            param.put("type", "driver");
+            if (isRunning == true && asynchronus == true) {
+                new Ajaxer().execute();
+            }else{
+                new Ajaxer().execute();
+            }
+        } else {
+            onNetworkError();
         }
     }
 
@@ -175,5 +196,49 @@ public class Requestor {
                 = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    public void showDialog(String title, String message) {
+        AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+        alertDialog.setTitle(title);
+        alertDialog.setMessage(message);
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
+    }
+
+    public static String getWifiMacAddress() {
+        try {
+            String interfaceName = "wlan0";
+            List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
+            for (NetworkInterface intf : interfaces) {
+                if (!intf.getName().equalsIgnoreCase(interfaceName)){
+                    continue;
+                }
+
+                byte[] mac = intf.getHardwareAddress();
+                if (mac==null){
+                    return "";
+                }
+
+                StringBuilder buf = new StringBuilder();
+                for (byte aMac : mac) {
+                    buf.append(String.format("%02X:", aMac));
+                }
+                if (buf.length()>0) {
+                    buf.deleteCharAt(buf.length() - 1);
+                }
+                return buf.toString();
+            }
+        } catch (Exception ex) { } // for now eat exceptions
+        return "";
+    }
+
+    public void setPage(Integer page){
+        this.PAGE = page;
     }
 }
