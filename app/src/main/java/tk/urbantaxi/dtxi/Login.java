@@ -31,6 +31,7 @@ import java.net.URLEncoder;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import tk.urbantaxi.dtxi.classes.Requestor;
 import tk.urbantaxi.dtxi.services.LocationService;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -42,6 +43,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     private EditText etUsername;
     private EditText etPassword;
     private Button btnSubmit;
+    private Requestor requestor;
+    private Map<String, Object> param;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -64,148 +67,67 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
         btnSubmit.setOnClickListener(this);
 
+        param = new LinkedHashMap<>();
+        requestor = new Requestor("login", param, this){
+            @Override
+            public void onNetworkError(){
+                showDialog("Network Error", "Please check your internet connection and try again later.");
+            }
+
+            @Override
+            public void preExecute(){
+                dialog.show();
+            }
+
+            @Override
+            public void postExecute(Boolean cancelled, String result){
+                dialog.dismiss();
+                try {
+                    JSONObject response = new JSONObject(result);
+                    String r = response.getString("result");
+                    if (r.equals("success")) {
+                        JSONObject details = response.getJSONObject("details");
+                        String stringDetails = details.toString();
+                        SharedPreferences.Editor editor = getSharedPreferences(SHARED_PREFERENCE, MODE_PRIVATE).edit();
+                        editor.putString("userDetails", stringDetails);
+                        editor.commit();
+
+                        Intent intentService = new Intent(getApplicationContext(), LocationService.class);
+                        startService(intentService);
+
+                        Boolean inSession = response.getBoolean("session");
+                        Intent intent = null;
+                        if(inSession){
+                            intent = new Intent(getApplicationContext(), MainActivity.class);
+                        }else{
+                            intent = new Intent(getApplicationContext(), Menuoptions.class);
+                        }
+
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                    } else {
+                        showDialog("Error", "Invalid username or password.");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
         SharedPreferences prefs = getSharedPreferences(SHARED_PREFERENCE, MODE_PRIVATE);
         String userDetails = prefs.getString("userDetails", null);
         if (userDetails != null) {
-            try {
-                JSONObject userObject = new JSONObject(userDetails);
-                String username = userObject.getString("username");
-                String password = userObject.getString("password");
-                Boolean network = isNetworkAvailable();
-                if(network == true){
-                    new LoginExec().execute(URL, username, password, "relogin");
-                }else{
-                    showDialog("Network Error", "Please check your internet connection and try again later.");
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            param.put("relogin", "relogin");
+            requestor.execute();
         }
     }
-
-//    public void goToMenu (View view){
-//        Intent intent = new Intent (this, Menuoptions.classes);
-//        startActivity(intent);
-//    }
 
     @Override
     public void onClick(View v) {
-        Boolean network = isNetworkAvailable();
-        if (network == true) {
             String username = etUsername.getText().toString().trim();
             String password = etPassword.getText().toString().trim();
-            new LoginExec().execute(URL, username, password);
-        } else {
-            showDialog("Network Error", "Please check your internet connection and try again later.");
-        }
-    }
-
-    public boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
-
-    public void showDialog(String title, String message) {
-        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-        alertDialog.setTitle(title);
-        alertDialog.setMessage(message);
-        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-        alertDialog.show();
-    }
-
-    public static byte[] urlParams(Map<String, Object> params) throws UnsupportedEncodingException {
-        StringBuilder postData = new StringBuilder();
-        for (Map.Entry<String, Object> param : params.entrySet()) {
-            if (postData.length() != 0) postData.append('&');
-            postData.append(URLEncoder.encode(param.getKey(), "UTF-8"));
-            postData.append('=');
-            postData.append(URLEncoder.encode(String.valueOf(param.getValue()), "UTF-8"));
-        }
-        byte[] postDataBytes = postData.toString().getBytes("UTF-8");
-        return postDataBytes;
-    }
-
-    public class LoginExec extends AsyncTask<String, String, String> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            dialog.show();
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            HttpURLConnection connection = null;
-            BufferedReader reader = null;
-
-            Map<String, Object> param = new LinkedHashMap<>();
-            param.put("username", params[1]);
-            param.put("password", params[2]);
-            if(params.length > 3 && params[3] != null){
-                param.put("relogin", params[3]);
-            }
-            param.put("type", "driver");
-
-            try {
-                byte[] postDataBytes = urlParams(param);
-                java.net.URL url = new URL(params[0]);
-                connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("POST");
-                connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                connection.setRequestProperty("Content-Length", String.valueOf(postDataBytes.length));
-                connection.setDoOutput(true);
-                connection.getOutputStream().write(postDataBytes);
-                connection.connect();
-                InputStream stream = connection.getInputStream();
-                reader = new BufferedReader(new InputStreamReader(stream));
-                StringBuffer buffer = new StringBuffer();
-                String line = "";
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line);
-                }
-                String finalJson = buffer.toString().trim();
-                return finalJson;
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            dialog.dismiss();
-            try {
-                JSONObject response = new JSONObject(s);
-                String result = response.getString("result");
-                if (result.equals("success")) {
-                    JSONObject details = response.getJSONObject("details");
-                    String stringDetails = details.toString();
-                    SharedPreferences.Editor editor = getSharedPreferences(SHARED_PREFERENCE, MODE_PRIVATE).edit();
-                    editor.putString("userDetails", stringDetails);
-                    editor.commit();
-
-                    Intent intentService = new Intent(getApplicationContext(), LocationService.class);
-                    startService(intentService);
-
-                    Intent intent = new Intent(getApplicationContext(), Menuoptions.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                } else {
-                    showDialog("Error", "Invalid username or password.");
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
+            param.put("username", username);
+            param.put("password", password);
+            requestor.execute();
     }
 }
