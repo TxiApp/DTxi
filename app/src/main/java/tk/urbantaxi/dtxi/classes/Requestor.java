@@ -9,7 +9,6 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
-import android.view.View;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -26,22 +25,18 @@ import java.net.NetworkInterface;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import tk.urbantaxi.dtxi.Vehicles;
-
 import static android.content.Context.MODE_PRIVATE;
-import static tk.urbantaxi.dtxi.Vehicles.SHARED_PREFERENCE;
+import static tk.urbantaxi.dtxi.classes.Constants.SHARED_PREFERENCE;
+import static tk.urbantaxi.dtxi.classes.Constants.URL;
 
 /**
  * Created by steph on 6/20/2017.
  */
 
 public class Requestor {
-
-    private final static String URL = "http://urbantaxi.tk/mbl/";
 
     private String url;
     private Boolean isRunning = false;
@@ -141,6 +136,7 @@ public class Requestor {
                 connection.setRequestProperty("Content-Length", String.valueOf(postDataBytes.length));
                 connection.setDoOutput(true);
                 connection.getOutputStream().write(postDataBytes);
+                connection.setConnectTimeout(30000);
                 connection.connect();
                 InputStream stream = connection.getInputStream();
                 reader = new BufferedReader(new InputStreamReader(stream));
