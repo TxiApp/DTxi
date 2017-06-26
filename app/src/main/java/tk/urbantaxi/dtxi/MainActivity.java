@@ -2,6 +2,7 @@ package tk.urbantaxi.dtxi;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
@@ -28,12 +29,24 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import tk.urbantaxi.dtxi.services.LocationService;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
+
+import static tk.urbantaxi.dtxi.classes.Constants.REQUEST_LOCATION_PERMISSION;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     GoogleMap mGoogleMap;
     GoogleApiClient mGoogleApiClient;
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults){
+        if(requestCode == REQUEST_LOCATION_PERMISSION){
+            Intent intentService = new Intent(getApplicationContext(), LocationService.class);
+            startService(intentService);
+            initMap();
+        }
+    }
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -43,11 +56,25 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (googleServicesAvailable()) {
-            setContentView(R.layout.activity_main);
-            initMap();
-        } else {
-            // no google map
+        setContentView(R.layout.activity_main);
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            String[] permissions = new String[2];
+            permissions[0] = android.Manifest.permission.ACCESS_FINE_LOCATION;
+            permissions[1] = android.Manifest.permission.ACCESS_COARSE_LOCATION;
+            ActivityCompat.requestPermissions(this, permissions, REQUEST_LOCATION_PERMISSION );
+        }else{
+            if (googleServicesAvailable()) {
+                initMap();
+            } else {
+                // no google map
+            }
         }
     }
 
