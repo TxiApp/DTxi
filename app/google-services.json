@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "373962603283",
+    "firebase_url": "https://dtxi-a00f5.firebaseio.com",
+    "project_id": "dtxi-a00f5",
+    "storage_bucket": "dtxi-a00f5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:373962603283:android:8a7d92c08b681197",
+        "android_client_info": {
+          "package_name": "tk.urbantaxi.dtxi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "373962603283-p9qptfvabkke7gn0pug1n2q6l9l47mf1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "tk.urbantaxi.dtxi",
+            "certificate_hash": "317c35b8fd7bc4da8813d47793ef61bbfaff2d83"
+          }
+        },
+        {
+          "client_id": "373962603283-17lrc7s9af0elohvff0pfcqkvnsg0tc9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBlZi-9XTCm9HyifisF1GqiyujEpkQMl2c"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "373962603283-17lrc7s9af0elohvff0pfcqkvnsg0tc9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
