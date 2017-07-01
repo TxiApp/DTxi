@@ -28,10 +28,9 @@ import tk.urbantaxi.dtxi.classes.Requestor;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 import static tk.urbantaxi.dtxi.Vehicles.VEHICLE_URL;
+import static tk.urbantaxi.dtxi.classes.Constants.SHARED_PREFERENCE;
 
 public class Startsession extends AppCompatActivity implements View.OnClickListener {
-
-    public final static String SHARED_PREFERENCE = "TaxiAppSharedPreference";
     public final static String URL = "startsession";
 
     public TextView tvName;

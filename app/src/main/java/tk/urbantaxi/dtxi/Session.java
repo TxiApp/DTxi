@@ -19,7 +19,7 @@ import java.util.Date;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-import static tk.urbantaxi.dtxi.Vehicles.SHARED_PREFERENCE;
+import static tk.urbantaxi.dtxi.classes.Constants.SHARED_PREFERENCE;
 
 public class Session extends AppCompatActivity {
 
