@@ -13,9 +13,9 @@ import org.json.JSONObject;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-public class Menuoptions extends AppCompatActivity {
+import static tk.urbantaxi.dtxi.classes.Constants.SHARED_PREFERENCE;
 
-    private static final String SHARED_PREFERENCE = "TaxiAppSharedPreference";
+public class Menuoptions extends AppCompatActivity {
     public TextView tvName;
 
     @Override

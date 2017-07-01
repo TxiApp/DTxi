@@ -12,7 +12,7 @@
     <ImageView
         android:id="@+id/splash"
         android:layout_width="130dp"
-        android:layout_height="130dp"
+        android:layout_height="100dp"
         android:layout_marginBottom="25dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dp"
@@ -29,10 +29,10 @@
 
     <ImageView
         android:id="@+id/ivTaxiImage"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="140dp"
+        android:layout_height="130dp"
         android:scaleType="fitXY"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:layout_gravity="center_horizontal"
         android:background="@drawable/image_border"/>
     <TextView
@@ -40,6 +40,7 @@
         android:layout_height="wrap_content"
         android:textAlignment="center"
         android:textSize="@dimen/medium"
+        android:layout_marginTop="10dp"
         android:textColor="@color/white"
         android:id="@+id/tvTaxiCode"/>
     <Button

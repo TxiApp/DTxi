@@ -61,9 +61,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class Vehicles extends AppCompatActivity {
     TextView t;
-    public final static String URL = "http://urbantaxi.tk/mbl/vehicle";
     public final static String VEHICLE_URL = "http://urbantaxi.tk/vehicle_images/";
-    public final static String SHARED_PREFERENCE = "TaxiAppSharedPreference";
 
     public Integer PAGE = 1;
     public List<VehicleModel> vehicleModelList = new ArrayList();
